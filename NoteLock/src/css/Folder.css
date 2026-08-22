@@ -1,0 +1,113 @@
+.folder-page {
+  min-height: 100svh;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.folder-shell {
+  width: min(100%, 430px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 37px 29px 46px;
+  display: flex;
+  flex-direction: column;
+}
+
+.folder-back {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  display: grid;
+  place-items: center;
+  color: #111;
+  background: #ffd21a;
+  border: 2px solid #111;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 #111;
+  cursor: pointer;
+}
+
+.folder-back svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.folder-shell h1 {
+  margin: 25px 0 20px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.folder-status {
+  color: #666;
+  font-size: 15px;
+  margin: 24px 0;
+}
+
+.folder-status.folder-error {
+  color: #ff4059;
+}
+
+.folder-notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.folder-note-row {
+  width: 100%;
+  min-height: 60px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #111;
+  background: #fff;
+  border: 1.5px solid #222;
+  border-radius: 9px;
+  box-shadow: 4px 6px 0 #111;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.folder-note-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.folder-note-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.folder-note-meta {
+  font-size: 12px;
+  color: #777;
+}
+
+.folder-lock-badge {
+  flex: none;
+  font-size: 18px;
+}
+
+.folder-note-row:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 3px 0 #111;
+}
+
+.folder-back:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 3px 0 #111;
+}
