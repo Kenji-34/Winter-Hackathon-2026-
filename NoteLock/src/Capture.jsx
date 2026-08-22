@@ -1,26 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './css/Capture.css'
-import CameraCapture from './CameraCapture.jsx'
-import { getSubjects } from './store'
+import CameraPage from './CameraPage.jsx'
 import { callGenerate } from './api'
 import { setDraft } from './draftStore'
 
 export default function Capture() {
-  const [subjects, setSubjects] = useState([])
-  const [subjectId, setSubjectId] = useState('')
   const [processing, setProcessing] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    getSubjects().then(setSubjects).catch(err => setError(err.message))
-  }, [])
-
-  async function handleCapture(dataUrl) {
+  async function handleCapture(dataUrl, subjectId, subjectName) {
     setProcessing(true)
     setError('')
     try {
-      const subject = subjects.find(s => s.id === subjectId)
-      const result = await callGenerate(dataUrl, subject?.name ?? 'General')
+      const result = await callGenerate(dataUrl, subjectName ?? 'General')
       setDraft({
         subjectId: subjectId || null,
         image: dataUrl,
@@ -36,35 +28,22 @@ export default function Capture() {
     }
   }
 
-  return (
-    <main className="capture-page">
-      <section className="capture-shell" aria-labelledby="capture-title">
-        <button className="capture-back" type="button" aria-label="Go back to homepage" onClick={() => { window.location.hash = '/' }}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
-        </button>
-
-        <h1 id="capture-title">Capture a slide</h1>
-
-        <label className="capture-subject">
-          Subject
-          <select value={subjectId} onChange={e => setSubjectId(e.target.value)} disabled={processing}>
-            <option value="">No subject</option>
-            {subjects.map(subject => (
-              <option key={subject.id} value={subject.id}>{subject.name}</option>
-            ))}
-          </select>
-        </label>
-
-        {error && <p className="capture-status capture-error">{error}</p>}
-
-        {processing ? (
+  if (processing) {
+    return (
+      <main className="capture-page">
+        <section className="capture-shell" aria-labelledby="capture-title">
+          <h1 id="capture-title">Capture a slide</h1>
           <p className="capture-status">Reading the slide…</p>
-        ) : (
-          <div className="capture-camera">
-            <CameraCapture onCapture={handleCapture} />
-          </div>
-        )}
-      </section>
-    </main>
+        </section>
+      </main>
+    )
+  }
+
+  return (
+    <CameraPage
+      onCapture={handleCapture}
+      onBack={() => { window.location.hash = '/' }}
+      externalError={error}
+    />
   )
 }

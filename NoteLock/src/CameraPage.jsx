@@ -13,6 +13,22 @@ const s = {
   },
   header: {
     padding: "16px 20px",
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  },
+  backBtn: {
+    flexShrink: 0,
+    width: 35,
+    height: 35,
+    display: "grid",
+    placeItems: "center",
+    color: "#111",
+    background: "#ffd21a",
+    border: "2px solid #111",
+    borderRadius: 10,
+    boxShadow: "2px 2px 0 #111",
+    cursor: "pointer",
   },
   dropdown: {
     width: "100%",
@@ -87,7 +103,15 @@ function CameraIcon() {
   );
 }
 
-export default function CameraPage({ onCapture }) {
+function BackIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 12H5M11 6l-6 6 6 6" />
+    </svg>
+  );
+}
+
+export default function CameraPage({ onCapture, onBack, externalError }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const [subjects, setSubjects] = useState([]);
@@ -148,13 +172,19 @@ export default function CameraPage({ onCapture }) {
     canvas.height = video.videoHeight;
     canvas.getContext("2d").drawImage(video, 0, 0);
     const dataUrl = canvas.toDataURL("image/jpeg");
+    const subjectName = subjects.find((subj) => subj.id === subjectId)?.name;
 
-    onCapture(dataUrl, subjectId);
+    onCapture(dataUrl, subjectId, subjectName);
   }
 
   return (
     <div style={s.page}>
       <div style={s.header}>
+        {onBack && (
+          <button style={s.backBtn} type="button" aria-label="Go back" onClick={onBack}>
+            <BackIcon />
+          </button>
+        )}
         <select
           style={s.dropdown}
           value={subjectId}
@@ -172,7 +202,7 @@ export default function CameraPage({ onCapture }) {
         </select>
       </div>
 
-      {error && <p style={s.error}>{error}</p>}
+      {(error || externalError) && <p style={s.error}>{error || externalError}</p>}
 
       <div style={s.previewWrap}>
         {isActive ? (
