@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './css/Homepage.css'
 import { getSubjects, addSubject, getNotes } from './store'
+import { signOut } from './AuthContext'
 
 const FOLDER_COLORS = ['#909090', '#23C55D', '#FFD78A', '#B4E24A', '#FF6B91', '#8A6CFF']
 
@@ -46,7 +47,10 @@ export default function Homepage() {
       <div className="home-root">
       <header className="home-header">
         <h1>Home</h1>
-        <button className="add-btn" aria-label="Add folder" onClick={handleAddFolder}>+</button>
+        <div className="header-actions">
+          <button className="signout-btn" onClick={signOut}>Sign out</button>
+          <button className="add-btn" aria-label="Add folder" onClick={handleAddFolder}>+</button>
+        </div>
       </header>
 
       {error && <p className="home-status home-error">{error}</p>}
