@@ -13,6 +13,7 @@ export default function Router() {
   }, [])
 
   if (route === '#/mcq') return <Mcq />
+  if (route === '#/result') return <Mcq showCompletedResult />
   if (route === '#/format') return <Format />
   return <Homepage />
 }

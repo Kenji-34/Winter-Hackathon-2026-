@@ -10,14 +10,14 @@ function getRandomQuestions() {
     .slice(0, QUESTIONS_PER_QUIZ)
 }
 
-export default function Mcq() {
+export default function Mcq({ showCompletedResult = false }) {
   const [questions, setQuestions] = useState(getRandomQuestions)
   const [questionIndex, setQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [result, setResult] = useState(null)
   const [explanationOpen, setExplanationOpen] = useState(true)
-  const [score, setScore] = useState(0)
-  const [complete, setComplete] = useState(false)
+  const [score, setScore] = useState(showCompletedResult ? QUESTIONS_PER_QUIZ : 0)
+  const [complete, setComplete] = useState(showCompletedResult)
 
   const question = questions[questionIndex]
   const questionNumber = questionIndex + 1
