@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuth, signIn, signUp } from './AuthContext'
-import Homepage from './Homepage'
+import Router from './Router'
 
 const s = {
   page: { minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'system-ui, sans-serif', background: '#f9fafb' },
@@ -77,5 +77,5 @@ export default function App() {
     <div style={s.page}><AuthForm /></div>
   )
 
-  return <Homepage />
+  return <Router />
 }
