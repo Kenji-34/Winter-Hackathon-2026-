@@ -106,7 +106,7 @@ export default function Homepage() {
           </svg>
         </button>
 
-        <button className="tab-icon camera" aria-label="Camera" onClick={() => { window.location.hash = '/mcq' }}>
+        <button className="tab-icon camera" aria-label="Camera" onClick={() => { window.location.hash = '/capture' }}>
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <rect x="3" y="7" width="18" height="12" rx="1" ry="1" />
             <path d="M8 7l1.2-2h5.6L16 7" />

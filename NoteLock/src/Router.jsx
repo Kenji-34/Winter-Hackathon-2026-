@@ -4,6 +4,7 @@ import Mcq from './Mcq.jsx'
 import Format from './Format.jsx'
 import Note from './Note.jsx'
 import Folder from './Folder.jsx'
+import Capture from './Capture.jsx'
 
 export default function Router() {
   const [route, setRoute] = useState(window.location.hash)
@@ -14,6 +15,7 @@ export default function Router() {
     return () => window.removeEventListener('hashchange', handleRouteChange)
   }, [])
 
+  if (route === '#/capture') return <Capture />
   if (route === '#/mcq') return <Mcq />
   if (route === '#/format') return <Format />
   if (route.startsWith('#/note/')) {
