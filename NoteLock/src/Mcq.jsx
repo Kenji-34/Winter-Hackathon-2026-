@@ -1,17 +1,23 @@
 import { useState } from 'react'
 import quizData from './mock.json'
 import './css/Mcq.css'
+import { getDraft, setDraft } from './draftStore'
 
 const QUESTIONS_PER_QUIZ = 3
 
-function getRandomQuestions() {
-  return [...quizData.questions]
+function getRandomQuestions(sourceQuestions) {
+  return [...sourceQuestions]
     .sort(() => Math.random() - 0.5)
     .slice(0, QUESTIONS_PER_QUIZ)
 }
 
 export default function Mcq({ showCompletedResult = false }) {
-  const [questions, setQuestions] = useState(getRandomQuestions)
+  // Real captures (via Capture.jsx) populate the draft before navigating
+  // here; falls back to mock.json for standalone/dev testing.
+  const draft = getDraft()
+  const quizSource = draft?.questions ? draft : quizData
+
+  const [questions, setQuestions] = useState(() => getRandomQuestions(quizSource.questions))
   const [questionIndex, setQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [result, setResult] = useState(null)
@@ -48,8 +54,23 @@ export default function Mcq({ showCompletedResult = false }) {
     setExplanationOpen(true)
   }
 
+  function goToFormat() {
+    if (!draft?.questions) {
+      // TEMP: no real draft (standalone/dev testing) — stand one up from mock.json
+      setDraft({
+        subjectId: null,
+        image: null,
+        topic: quizData.topic,
+        title: quizData.title,
+        tags: quizData.tags,
+        questions: quizData.questions,
+      })
+    }
+    window.location.hash = '/format'
+  }
+
   function restartQuiz() {
-    setQuestions(getRandomQuestions())
+    setQuestions(getRandomQuestions(quizSource.questions))
     setQuestionIndex(0)
     setSelectedAnswer(null)
     setResult(null)
@@ -125,13 +146,7 @@ export default function Mcq({ showCompletedResult = false }) {
             <div className="mcq-complete-icon" aria-hidden="true">✓</div>
             <h1 id="question-title">Quiz complete!</h1>
             <p>You answered <strong>{score}</strong> out of <strong>{totalQuestions}</strong> questions correctly.</p>
-            <button
-              className="mcq-submit"
-              type="button"
-              onClick={score === totalQuestions
-                ? () => { window.location.hash = '/format' }
-                : restartQuiz}
-            >
+            <button className="mcq-submit" type="button" onClick={score === totalQuestions ? goToFormat : restartQuiz}>
               {score === totalQuestions ? 'Make note' : 'Try again'}
             </button>
             <button className="mcq-home-link" type="button" onClick={() => { window.location.hash = '/' }}>Back to home</button>

@@ -1,0 +1,96 @@
+.capture-page {
+  min-height: 100svh;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.capture-shell {
+  width: min(100%, 430px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 37px 29px 46px;
+  display: flex;
+  flex-direction: column;
+}
+
+.capture-back {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  display: grid;
+  place-items: center;
+  color: #111;
+  background: #ffd21a;
+  border: 2px solid #111;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 #111;
+  cursor: pointer;
+}
+
+.capture-back svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.capture-shell h1 {
+  margin: 25px 0 20px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.capture-subject {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.capture-subject select {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1.5px solid #222;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 14px;
+}
+
+.capture-status {
+  margin: 16px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.capture-status.capture-error {
+  color: #ff4059;
+}
+
+.capture-camera {
+  border: 1.5px solid #222;
+  border-radius: 9px;
+  box-shadow: 4px 6px 0 #111;
+  padding: 12px;
+}
+
+.capture-camera video {
+  border-radius: 6px;
+  background: #000;
+}
+
+.capture-camera button {
+  margin: 8px 6px 0 0;
+  padding: 8px 14px;
+  background: #ffe575;
+  border: 1.5px solid #111;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
