@@ -44,22 +44,6 @@
   font-weight: 700;
 }
 
-.format-temp-image {
-  display: block;
-  margin-bottom: 24px;
-  padding: 12px 14px;
-  background: #fff8dd;
-  border: 1.5px dashed #b8960c;
-  border-radius: 9px;
-  font-size: 13px;
-  color: #6b5900;
-}
-
-.format-temp-image input {
-  display: block;
-  margin-top: 8px;
-}
-
 .format-picker {
   margin-top: 12px;
   padding: 18px 49px 20px;

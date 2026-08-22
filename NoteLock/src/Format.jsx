@@ -12,19 +12,10 @@ async function dataUrlToBlob(dataUrl) {
 export default function Format() {
   const draft = getDraft()
   const [selectedFormat, setSelectedFormat] = useState(null)
-  const [tempImage, setTempImage] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const image = draft?.image ?? tempImage
-
-  function handleTempImage(e) {
-    const file = e.target.files[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => setTempImage(reader.result)
-    reader.readAsDataURL(file)
-  }
+  const image = draft?.image
 
   async function handleConfirm() {
     if (!selectedFormat || !image) return
@@ -76,13 +67,6 @@ export default function Format() {
         </button>
 
         <h1 id="format-title">Choose a note format</h1>
-
-        {!draft?.image && (
-          <label className="format-temp-image">
-            No captured image yet (Capture screen isn't wired in) — attach one to test:
-            <input type="file" accept="image/*" onChange={handleTempImage} />
-          </label>
-        )}
 
         <div className="format-picker">
           <div className="format-option">

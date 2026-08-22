@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import './css/Homepage.css'
 import { getSubjects, addSubject, getNotes } from './store'
 import { signOut } from './AuthContext'
-import { seedDemoData } from './seed'
 
 const FOLDER_COLORS = ['#909090', '#23C55D', '#FFD78A', '#B4E24A', '#FF6B91', '#8A6CFF']
 
@@ -11,7 +10,6 @@ export default function Homepage() {
   const [noteCounts, setNoteCounts] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [seeding, setSeeding] = useState(false)
 
   useEffect(() => {
     loadSubjects()
@@ -44,19 +42,6 @@ export default function Homepage() {
     }
   }
 
-  async function handleSeed() {
-    setSeeding(true)
-    setError('')
-    try {
-      await seedDemoData()
-      loadSubjects()
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setSeeding(false)
-    }
-  }
-
   return (
     <div className="phone-frame">
       <div className="home-root">
@@ -67,11 +52,6 @@ export default function Homepage() {
           <button className="add-btn" aria-label="Add folder" onClick={handleAddFolder}>+</button>
         </div>
       </header>
-
-      {/* TEMP: dev-only way to populate real demo data until seeding has a proper home */}
-      <button className="seed-btn" type="button" onClick={handleSeed} disabled={seeding}>
-        {seeding ? 'Seeding…' : 'Seed demo data'}
-      </button>
 
       {error && <p className="home-status home-error">{error}</p>}
 
