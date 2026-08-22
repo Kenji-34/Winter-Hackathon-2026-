@@ -1,8 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { getSubjects } from "./store";
 
-const SUBJECTS = ["CAB302", "EFB210", "CAB201", "AYB150"];
-
 const s = {
   page: {
     minHeight: "100svh",
