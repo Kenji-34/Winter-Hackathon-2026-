@@ -37,3 +37,26 @@ export async function callGenerate(imageDataUrl, subject) {
 
   return res.json()
 }
+
+export async function callGenerateNote(imageDataUrl, formatId) {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new Error('Not authenticated')
+
+  const resized = await resizeImage(imageDataUrl)
+
+  const res = await fetch('/api/generate-note', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ image: resized, formatId }),
+  })
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error(err.error || `Request failed: ${res.status}`)
+  }
+
+  return res.json()
+}

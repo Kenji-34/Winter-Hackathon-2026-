@@ -34,6 +34,9 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 .signout-btn{height:40px;padding:0 16px;border-radius:10px;background:#fff;border:2px solid #000;font-size:13px;font-weight:600;color:#000;cursor:pointer;box-shadow:3px 3px 0 #000}
 .add-btn{width:54px;height:54px;border-radius:12px;background:#FFD400;border:2px solid #000;font-size:30px;display:inline-grid;place-items:center;box-shadow:4px 4px 0 #000}
 
+.seed-btn{margin:0 0 16px;padding:8px 14px;background:#f4f3ec;border:1.5px dashed #999;border-radius:8px;font-size:12px;font-weight:600;color:#666;cursor:pointer}
+.seed-btn:disabled{opacity:.6;cursor:not-allowed}
+
 .home-status{grid-column:1/-1;color:var(--text);font-size:15px;margin:24px 0}
 .home-status.home-error{color:#e0245e}
 
@@ -41,7 +44,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 .folders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:25px;align-items:start;justify-items:center}
 
 /* folder card - keeps proportions and scales */
-.folder{width:100%;max-width:155.3px;position:relative;aspect-ratio:160.3/135.85}
+.folder{width:100%;max-width:155.3px;position:relative;aspect-ratio:160.3/135.85;background:none;border:none;padding:0;font:inherit;text-align:left;cursor:pointer}
 .folder .folder-card{position:absolute;left:0;top:11.5%;width:100%;height:88.5%;background:#fff;border:2px solid #000;border-radius:5px;box-shadow:5px 5px 0 #000}
 .folder .folder-tab{position:absolute;top:0;left:4.4%;width:47.6%;height:18%;background:transparent;border:2px solid #000;border-radius:2px;box-shadow:2px 2px 0 #000}
 .folder .folder-swatch{position:absolute;top:20.6%;left:7%;width:25.1%;height:30.3%;border-radius:2px;border:2px solid #000}

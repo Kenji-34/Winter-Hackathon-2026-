@@ -1,0 +1,141 @@
+.note-page {
+  min-height: 100svh;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.note-shell {
+  width: min(100%, 430px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 37px 29px 46px;
+  display: flex;
+  flex-direction: column;
+}
+
+.note-back {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  display: grid;
+  place-items: center;
+  color: #111;
+  background: #ffd21a;
+  border: 2px solid #111;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 #111;
+  cursor: pointer;
+}
+
+.note-back svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.note-shell h1 {
+  margin: 25px 0 4px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.note-topic {
+  margin: 0 0 12px;
+  color: #666;
+  font-size: 14px;
+}
+
+.note-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.note-chip {
+  padding: 5px 12px;
+  background: #ffe575;
+  border: 1.5px solid #111;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.note-body {
+  margin-top: 8px;
+}
+
+.note-cornell-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1.5px solid #222;
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow: 4px 6px 0 #111;
+}
+
+.note-cornell-table th,
+.note-cornell-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e5e4e7;
+  font-size: 14px;
+}
+
+.note-cornell-table th {
+  width: 38%;
+  background: #ffe575;
+  font-weight: 700;
+}
+
+.note-cornell-table tr:last-child th,
+.note-cornell-table tr:last-child td {
+  border-bottom: none;
+}
+
+.note-summary {
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: #f4f3ec;
+  border: 1.5px solid #222;
+  border-radius: 9px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.note-subtopic {
+  margin-bottom: 20px;
+}
+
+.note-subtopic h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.note-subtopic ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.note-list {
+  padding-left: 22px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.note-status {
+  color: #666;
+  font-size: 15px;
+  margin: 24px 0;
+}
+
+.note-status.note-error {
+  color: #ff4059;
+}

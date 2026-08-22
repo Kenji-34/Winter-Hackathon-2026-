@@ -1,0 +1,130 @@
+.format-page {
+  min-height: 100svh;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.format-shell {
+  width: min(100%, 430px);
+  min-height: 100svh;
+  margin: 0 auto;
+  padding: 37px 29px 46px;
+  display: flex;
+  flex-direction: column;
+}
+
+.format-back {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  display: grid;
+  place-items: center;
+  color: #111;
+  background: #ffd21a;
+  border: 2px solid #111;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 #111;
+  cursor: pointer;
+}
+
+.format-back svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.format-shell h1 {
+  margin: 25px 0 4px;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.format-subtitle {
+  margin: 0 0 24px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.format-temp-image {
+  display: block;
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  background: #fff8dd;
+  border: 1.5px dashed #b8960c;
+  border-radius: 9px;
+  font-size: 13px;
+  color: #6b5900;
+}
+
+.format-temp-image input {
+  display: block;
+  margin-top: 8px;
+}
+
+.format-options {
+  display: grid;
+  gap: 16px;
+}
+
+.format-card {
+  min-height: 64px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  color: #111;
+  background: #fff;
+  border: 1.5px solid #222;
+  border-radius: 9px;
+  box-shadow: 4px 6px 0 #111;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.format-card.selected {
+  background: #ffe575;
+}
+
+.format-status {
+  margin: 16px 0 0;
+  font-size: 14px;
+}
+
+.format-error {
+  color: #ff4059;
+}
+
+.format-submit {
+  width: min(232px, calc(100% - 50px));
+  min-height: 49px;
+  margin: 40px auto 0;
+  color: #111;
+  background: #ffd21a;
+  border: 1.5px solid #111;
+  border-radius: 9px;
+  box-shadow: 4px 6px 0 #111;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.format-submit:disabled {
+  cursor: not-allowed;
+  opacity: .48;
+}
+
+.format-back:active,
+.format-card:active,
+.format-submit:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 3px 0 #111;
+}

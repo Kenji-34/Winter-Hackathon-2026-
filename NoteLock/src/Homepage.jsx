@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import './css/Homepage.css'
 import { getSubjects, addSubject, getNotes } from './store'
 import { signOut } from './AuthContext'
+import { seedDemoData } from './seed'
 
 const FOLDER_COLORS = ['#909090', '#23C55D', '#FFD78A', '#B4E24A', '#FF6B91', '#8A6CFF']
 
@@ -10,6 +11,7 @@ export default function Homepage() {
   const [noteCounts, setNoteCounts] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [seeding, setSeeding] = useState(false)
 
   useEffect(() => {
     loadSubjects()
@@ -42,6 +44,19 @@ export default function Homepage() {
     }
   }
 
+  async function handleSeed() {
+    setSeeding(true)
+    setError('')
+    try {
+      await seedDemoData()
+      loadSubjects()
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSeeding(false)
+    }
+  }
+
   return (
     <div className="phone-frame">
       <div className="home-root">
@@ -53,6 +68,11 @@ export default function Homepage() {
         </div>
       </header>
 
+      {/* TEMP: dev-only way to populate real demo data until seeding has a proper home */}
+      <button className="seed-btn" type="button" onClick={handleSeed} disabled={seeding}>
+        {seeding ? 'Seeding…' : 'Seed demo data'}
+      </button>
+
       {error && <p className="home-status home-error">{error}</p>}
 
       <main className="folders-grid">
@@ -62,13 +82,18 @@ export default function Homepage() {
           <p className="home-status">No folders yet — tap + to add one.</p>
         ) : (
           subjects.map(subject => (
-            <div className="folder" key={subject.id}>
+            <button
+              className="folder"
+              type="button"
+              key={subject.id}
+              onClick={() => { window.location.hash = `/folder/${subject.id}` }}
+            >
               <div className="folder-tab" style={{ background: subject.color }} />
               <div className="folder-card" />
               <div className="folder-swatch" style={{ background: subject.color }} />
               <div className="folder-notes">{noteCounts[subject.id] ?? 0} notes</div>
               <div className="folder-title">{subject.name}</div>
-            </div>
+            </button>
           ))
         )}
       </main>
@@ -81,7 +106,7 @@ export default function Homepage() {
           </svg>
         </button>
 
-        <button className="tab-icon camera" aria-label="Camera">
+        <button className="tab-icon camera" aria-label="Camera" onClick={() => { window.location.hash = '/capture' }}>
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <rect x="3" y="7" width="18" height="12" rx="1" ry="1" />
             <path d="M8 7l1.2-2h5.6L16 7" />
