@@ -205,11 +205,14 @@ export default function CameraPage({ onCapture, onBack, externalError }) {
       {(error || externalError) && <p style={s.error}>{error || externalError}</p>}
 
       <div style={s.previewWrap}>
-        {isActive ? (
-          <video ref={videoRef} autoPlay playsInline muted style={s.video} />
-        ) : (
-          <span style={s.placeholder}>Starting camera…</span>
-        )}
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          style={{ ...s.video, display: isActive ? "block" : "none" }}
+        />
+        {!isActive && <span style={s.placeholder}>Starting camera…</span>}
       </div>
 
       <div style={s.footer}>
