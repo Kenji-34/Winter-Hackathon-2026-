@@ -1,3 +1,6 @@
+# Environment — never commit secrets
+.env
+
 # Logs
 logs
 *.log
@@ -22,3 +25,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+<<<<<<< HEAD
+.env
+=======
+
+.vercel
+.env*
+>>>>>>> 5b564d54981b7bdd3fc7f334e520aa8833681ab3

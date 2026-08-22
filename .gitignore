@@ -1,0 +1,19 @@
+# Claude Code — local-only settings and session data (never commit)
+.claude/settings.local.json
+.claude/todos/
+.claude/__pycache__/
+
+# Environment secrets at repo root
+.env
+.env.local
+*.local
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+CLAUDE.md
+
+
+.vercel
+.env*
