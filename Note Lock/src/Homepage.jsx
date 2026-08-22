@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 import './css/Homepage.css'
 
 const folders = [
@@ -18,7 +18,14 @@ export default function Homepage() {
       <div className="home-root">
       <header className="home-header">
         <h1>Home</h1>
-        <button className="add-btn" aria-label="Add folder">+</button>
+        <button
+          className="add-btn"
+          type="button"
+          aria-label="Open quiz"
+          onClick={() => { window.location.hash = '/mcq' }}
+        >
+          +
+        </button>
       </header>
 
       <main className="folders-grid">
