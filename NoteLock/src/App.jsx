@@ -1,6 +1,11 @@
 import { useState } from 'react'
+<<<<<<< HEAD
 import { useAuth, signIn, signUp, signOut } from './AuthContext'
 import CameraCapture from './CameraCapture'
+=======
+import { useAuth, signIn, signUp } from './AuthContext'
+import Homepage from './Homepage'
+>>>>>>> main
 
 const s = {
   page: { minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'system-ui, sans-serif', background: '#f9fafb' },
@@ -12,10 +17,6 @@ const s = {
   toggle: { background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: '#6b7280', textAlign: 'center', padding: 0 },
   error: { fontSize: 13, color: '#ef4444', textAlign: 'center', margin: 0 },
   notice: { fontSize: 13, color: '#22c55e', textAlign: 'center', margin: 0 },
-  email: { margin: 0, fontSize: 14, color: '#6b7280' },
-  name: { margin: 0, fontSize: 18, fontWeight: 600, color: '#111827' },
-  signedCard: { width: '100%', maxWidth: 380, background: '#fff', borderRadius: 12, border: '1px solid #e5e7eb', padding: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 },
-  outBtn: { padding: '9px 20px', borderRadius: 8, border: '1px solid #e5e7eb', cursor: 'pointer', fontSize: 14, background: '#fff', color: '#374151' },
 }
 
 function AuthForm() {
@@ -80,6 +81,7 @@ export default function App() {
     <div style={s.page}><p style={{ color: '#9ca3af' }}>Loading…</p></div>
   )
 
+<<<<<<< HEAD
   return (
     <div style={s.page}>
       {!user ? (
@@ -96,6 +98,13 @@ export default function App() {
       <CameraCapture onCapture={(dataUrl) => console.log('Captured:', dataUrl.slice(0, 50))} />
     </div>
   )
+=======
+  if (!user) return (
+    <div style={s.page}><AuthForm /></div>
+  )
+
+  return <Homepage />
+>>>>>>> main
 }
 
 //   if (!user) return (

@@ -1,0 +1,84 @@
+{
+  "topic": "File Systems",
+  "title": "Recovering with a journal",
+  "tags": [
+    "Journaling",
+    "File Systems",
+    "Crash Recovery",
+    "Data Consistency"
+  ],
+  "content": {
+    "summary": "Journaling file systems maintain operational consistency by using a dedicated background process to resolve incomplete transactions after system crashes. The recovery mechanism handles three specific object/metadata states to clean up or finalize pending operations. Potential race conditions during record cleanup are mitigated by setting expiry thresholds significantly longer than standard write durations.",
+    "sections": [
+      {
+        "heading": "Transaction Recovery Process",
+        "points": [
+          "Journal record exists without object or metadata: Record is deleted if expired.",
+          "Object exists without metadata: Missing metadata is written to complete the transaction.",
+          "Object and metadata exist but journal record remains: Journal record is removed."
+        ]
+      },
+      {
+        "heading": "Safety and Race Condition Analysis",
+        "points": [
+          "Deleting orphaned journal records introduces a race condition if write operations take longer than expected.",
+          "Setting high expiry times relative to max write duration mitigates premature deletion risks.",
+          "Completing metadata and deleting redundant records are safe because they mirror standard execution flow."
+        ]
+      },
+      {
+        "heading": "System Implementation",
+        "points": [
+          "Commonly implemented in file systems such as EXT3, EXT4, and NTFS for crash recovery.",
+          "Ensures file system integrity without requiring full disk consistency checks upon reboot."
+        ]
+      }
+    ],
+    "keyTerms": [
+      {
+        "term": "Journaling",
+        "definition": "A file system feature that logs intended changes to a dedicated journal before writing them to the main storage to ensure crash recovery."
+      },
+      {
+        "term": "Race Condition",
+        "definition": "A flaw where the output of a process depends unexpectedly on the relative timing or execution order of concurrent operations."
+      }
+    ],
+    "formulas": []
+  },
+  "questions": [
+    {
+      "q": "A system administrator sets the journal record expiry timeout to 3 seconds. A large file upload takes 10 seconds under heavy load. The recovery process runs at second 5. What is the catastrophic outcome?",
+      "options": [
+        "The recovery process deletes the journal record while the file is still uploading, leading to an unindexed orphaned object when the write finishes.",
+        "The recovery process automatically generates corrupt metadata before the file upload completes.",
+        "The storage system aborts the upload and rolls back the partially uploaded file safely.",
+        "The recovery process detects the active network connection and pauses execution indefinitely."
+      ],
+      "answer": 0,
+      "explanation": "Deleting an expired journal record when no object/metadata exists is intended to clean up abandoned operations. However, if the expiry time is shorter than an active write operation, the recovery process assumes the transaction was abandoned and deletes the record prematurely (a race condition), leaving the eventual write un-tracked."
+    },
+    {
+      "q": "During a power failure, a file object is fully written to storage, but the system crashes right before writing the metadata. Upon reboot, how does the recovery process handle this specific state?",
+      "options": [
+        "It deletes the written object because missing metadata indicates payload corruption.",
+        "It writes the missing metadata, completing the operation safely since this mirrors normal task execution.",
+        "It flags the object for manual inspection and blocks further disk writes.",
+        "It deletes the journal record and prompts the user to re-upload the file."
+      ],
+      "answer": 1,
+      "explanation": "When an object exists without metadata, the recovery daemon safe action is to write the metadata. This is identical to what the original process would have done, making it completely safe and restoring system consistency without data loss."
+    },
+    {
+      "q": "A system crash occurs immediately after both a file object and its metadata are committed to storage, but before the journal entry is deleted. What is the state upon recovery?",
+      "options": [
+        "The system identifies a duplicate entry error and deletes both the object and metadata.",
+        "The system rewrites the entire object to match the timestamp of the orphaned journal record.",
+        "The data is intact, and the recovery process simply deletes the leftover journal record.",
+        "The system forces a rollback of the metadata to make the application re-upload the file."
+      ],
+      "answer": 2,
+      "explanation": "Since both the object and metadata are fully persisted, the transaction is functionally complete. The recovery daemon only needs to clean up the residual journal record, which is safe because the data itself is already valid and consistent."
+    }
+  ]
+}
