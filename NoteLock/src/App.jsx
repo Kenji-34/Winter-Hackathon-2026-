@@ -1,11 +1,6 @@
 import { useState } from 'react'
-<<<<<<< HEAD
-import { useAuth, signIn, signUp, signOut } from './AuthContext'
-import CameraCapture from './CameraCapture'
-=======
 import { useAuth, signIn, signUp } from './AuthContext'
 import Homepage from './Homepage'
->>>>>>> main
 
 const s = {
   page: { minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'system-ui, sans-serif', background: '#f9fafb' },
@@ -67,9 +62,6 @@ function AuthForm() {
       <button style={s.toggle} onClick={() => { setMode(m => m === 'signin' ? 'signup' : 'signin'); setError(''); setNotice('') }}>
         {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
       </button>
-      {/* <CameraCapture onCapture={(dataUrl) => {
-        console.log('Captured Image:', dataUrl.slice(0, 50) + '...')
-      }} /> */}
     </div>
   )
 }
@@ -81,44 +73,9 @@ export default function App() {
     <div style={s.page}><p style={{ color: '#9ca3af' }}>Loading…</p></div>
   )
 
-<<<<<<< HEAD
-  return (
-    <div style={s.page}>
-      {!user ? (
-        <AuthForm />
-      ) : (
-        <div style={s.signedCard}>
-          <h1 style={s.h1}>Note Lock</h1>
-          <p style={s.email}>{user.email}</p>
-          <button style={s.outBtn} onClick={signOut}>Sign out</button>
-        </div>
-      )}
-
-      {/* Camera visible regardless of auth state, for now */}
-      <CameraCapture onCapture={(dataUrl) => console.log('Captured:', dataUrl.slice(0, 50))} />
-    </div>
-  )
-=======
   if (!user) return (
     <div style={s.page}><AuthForm /></div>
   )
 
   return <Homepage />
->>>>>>> main
 }
-
-//   if (!user) return (
-//     <div style={s.page}><AuthForm /></div>
-//   )
-
-//   return (
-//     <div style={s.page}>
-//       <div style={s.signedCard}>
-//         <h1 style={s.h1}>Note Lock</h1>
-//         <p style={s.name}>Welcome back</p>
-//         <p style={s.email}>{user.email}</p>
-//         <button style={s.outBtn} onClick={signOut}>Sign out</button>
-//       </div>
-//     </div>
-//   )
-// }
