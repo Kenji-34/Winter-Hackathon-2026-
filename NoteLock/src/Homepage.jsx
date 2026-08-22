@@ -1,36 +1,72 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 import './css/Homepage.css'
+import { getSubjects, addSubject, getNotes } from './store'
 
-const folders = [
-  '#909090',
-  '#23C55D',
-  '#FFD78A',
-  '#B4E24A',
-  '#FF6B91',
-  '#8A6CFF',
-  '#23C55D',
-  '#23C55D',
-]
+const FOLDER_COLORS = ['#909090', '#23C55D', '#FFD78A', '#B4E24A', '#FF6B91', '#8A6CFF']
 
 export default function Homepage() {
+  const [subjects, setSubjects] = useState([])
+  const [noteCounts, setNoteCounts] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    loadSubjects()
+  }, [])
+
+  async function loadSubjects() {
+    setLoading(true)
+    setError('')
+    try {
+      const data = await getSubjects()
+      setSubjects(data)
+      const counts = await Promise.all(data.map(subject => getNotes(subject.id)))
+      setNoteCounts(Object.fromEntries(data.map((subject, i) => [subject.id, counts[i].length])))
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleAddFolder() {
+    const name = window.prompt('Folder name?')
+    if (!name) return
+    const color = FOLDER_COLORS[subjects.length % FOLDER_COLORS.length]
+    try {
+      await addSubject({ name, color })
+      loadSubjects()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
   return (
     <div className="phone-frame">
       <div className="home-root">
       <header className="home-header">
         <h1>Home</h1>
-        <button className="add-btn" aria-label="Add folder">+</button>
+        <button className="add-btn" aria-label="Add folder" onClick={handleAddFolder}>+</button>
       </header>
 
+      {error && <p className="home-status home-error">{error}</p>}
+
       <main className="folders-grid">
-        {folders.map((color, i) => (
-          <div className="folder" key={i}>
-            <div className="folder-tab" style={{ background: color }} />
-            <div className="folder-card" />
-            <div className="folder-swatch" style={{ background: color }} />
-            <div className="folder-notes">3 notes</div>
-            <div className="folder-title">Folder</div>
-          </div>
-        ))}
+        {loading ? (
+          <p className="home-status">Loading…</p>
+        ) : subjects.length === 0 ? (
+          <p className="home-status">No folders yet — tap + to add one.</p>
+        ) : (
+          subjects.map(subject => (
+            <div className="folder" key={subject.id}>
+              <div className="folder-tab" style={{ background: subject.color }} />
+              <div className="folder-card" />
+              <div className="folder-swatch" style={{ background: subject.color }} />
+              <div className="folder-notes">{noteCounts[subject.id] ?? 0} notes</div>
+              <div className="folder-title">{subject.name}</div>
+            </div>
+          ))
+        )}
       </main>
 
       <nav className="tabbar" role="navigation" aria-label="Bottom navigation">
