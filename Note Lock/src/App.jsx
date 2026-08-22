@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth, signIn, signUp, signOut } from './AuthContext'
+import { callGenerate } from './api'
 
 const s = {
   page: { minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'system-ui, sans-serif', background: '#f9fafb' },
@@ -69,6 +70,46 @@ function AuthForm() {
   )
 }
 
+function ApiTest() {
+  const [result, setResult] = useState(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleFile(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    setResult(null); setError(''); setLoading(true)
+
+    const reader = new FileReader()
+    reader.onload = async () => {
+      try {
+        const data = await callGenerate(reader.result, 'Test')
+        setResult(data)
+        console.log('API response:', data)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
+  return (
+    <div style={{ width: '100%', borderTop: '1px solid #e5e7eb', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase' }}>API Test</p>
+      <input type="file" accept="image/*" onChange={handleFile} disabled={loading} />
+      {loading && <p style={{ margin: 0, fontSize: 13, color: '#6b7280' }}>Calling Gemini…</p>}
+      {error && <p style={{ margin: 0, fontSize: 13, color: '#ef4444' }}>{error}</p>}
+      {result && (
+        <pre style={{ margin: 0, fontSize: 11, background: '#f3f4f6', padding: 12, borderRadius: 8, textAlign: 'left', overflowX: 'auto', maxHeight: 300 }}>
+          {JSON.stringify(result, null, 2)}
+        </pre>
+      )}
+    </div>
+  )
+}
+
 export default function App() {
   const { user, loading } = useAuth()
 
@@ -86,6 +127,7 @@ export default function App() {
         <h1 style={s.h1}>Note Lock</h1>
         <p style={s.name}>Welcome back</p>
         <p style={s.email}>{user.email}</p>
+        <ApiTest />
         <button style={s.outBtn} onClick={signOut}>Sign out</button>
       </div>
     </div>

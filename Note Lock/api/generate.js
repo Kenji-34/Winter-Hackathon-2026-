@@ -8,7 +8,7 @@ const NOTE_SCHEMA = {
   properties: {
     topic: { type: 'string' },
     title: { type: 'string' },
-    tags:  { type: 'array', items: { type: 'string' } },
+    tags:  { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 5 },
     content: {
       type: 'object',
       properties: {
@@ -19,10 +19,12 @@ const NOTE_SCHEMA = {
             type: 'object',
             properties: {
               heading: { type: 'string' },
-              points:  { type: 'array', items: { type: 'string' } },
+              points:  { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 5 },
             },
             required: ['heading', 'points'],
           },
+          minItems: 1,
+          maxItems: 5,
         },
         keyTerms: {
           type: 'array',
@@ -34,6 +36,7 @@ const NOTE_SCHEMA = {
             },
             required: ['term', 'definition'],
           },
+          maxItems: 6,
         },
         formulas: { type: 'array', items: { type: 'string' } },
       },
@@ -45,12 +48,14 @@ const NOTE_SCHEMA = {
         type: 'object',
         properties: {
           q:           { type: 'string' },
-          options:     { type: 'array', items: { type: 'string' } },
+          options:     { type: 'array', items: { type: 'string' }, minItems: 4, maxItems: 4 },
           answer:      { type: 'integer' },
           explanation: { type: 'string' },
         },
         required: ['q', 'options', 'answer', 'explanation'],
       },
+      minItems: 2,
+      maxItems: 3,
     },
   },
   required: ['topic', 'title', 'tags', 'content', 'questions'],
@@ -58,15 +63,27 @@ const NOTE_SCHEMA = {
 
 const SYSTEM_PROMPT = `You are a study assistant that turns lecture slides into structured notes and retrieval-practice questions.
 
-Rules for questions (this is the most important part):
-- Write 2–3 questions per slide.
-- Every question must test APPLICATION or IMPLICATION of the concept — never ask for text that appears verbatim on the slide.
-- A question is failed if a student could answer it by skimming the slide. Do not write that question.
-- Distractors must be plausible-but-wrong applications, not obviously silly options.
-- Example of a bad question: "What three characteristics are listed?" — answerable by reading.
-- Example of a good question: "A designer uses thin grey borders and soft drop shadows. Which principle on this slide does that violate, and why?" — requires understanding.
+NOTES
+- summary: 2–4 concise sentences covering the core idea of the slide.
+- sections: extract the main concepts as headings with bullet points. Do not invent content not on the slide.
+- keyTerms: only include terms explicitly introduced or defined on the slide.
+- formulas: include only if the slide contains equations or formulas; otherwise return an empty array.
 
-Output language: match the language of the slide content.`
+QUESTIONS — this is the most critical part of the output.
+Context: after the student photographs the slide, the slide is HIDDEN. They answer from memory alone. Questions must force recall and application, not reading.
+
+Rules:
+1. Write EXACTLY 3 questions (or 2 if the slide is very simple).
+2. Each question must have EXACTLY 4 options.
+3. Every question tests APPLICATION or IMPLICATION — what happens when you use, break, or extend the concept. Never ask for text that appears on the slide.
+4. A question fails if a student who never saw the slide could eliminate options by logic, or if a student who glanced at the slide could answer by skimming. Rewrite it.
+5. Distractors must be plausible misconceptions or common errors — not obviously wrong.
+6. The explanation must say WHY the correct answer is right and why the most tempting wrong answer is wrong.
+
+BAD question (fails rule 3): "Which three characteristics are listed on this slide?"
+GOOD question: "A student applies this concept but uses soft drop shadows and muted colours. Which rule does that violate and what is the likely visual effect?"
+
+Output language: match the language of the slide.`
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -96,25 +113,37 @@ export default async function handler(req, res) {
   const mimeType = image.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg'
   const base64Data = image.replace(/^data:image\/\w+;base64,/, '')
 
-  try {
-    const response = await ai.models.generateContent({
-      model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: `Subject: ${subject || 'General'}. Generate notes and questions for this lecture slide.` },
-            { inlineData: { mimeType, data: base64Data } },
-          ],
-        },
-      ],
-      config: {
-        systemInstruction: SYSTEM_PROMPT,
-        responseMimeType: 'application/json',
-        responseSchema: NOTE_SCHEMA,
+  const call = () => ai.models.generateContent({
+    model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          { text: `Subject: ${subject || 'General'}. Generate notes and questions for this lecture slide.` },
+          { inlineData: { mimeType, data: base64Data } },
+        ],
       },
-    })
+    ],
+    config: {
+      systemInstruction: SYSTEM_PROMPT,
+      responseMimeType: 'application/json',
+      responseSchema: NOTE_SCHEMA,
+      temperature: 0.4,
+    },
+  })
 
+  try {
+    let response
+    try {
+      response = await call()
+    } catch (err) {
+      if (err?.status === 503 || err?.code === 503) {
+        await new Promise(r => setTimeout(r, 3000))
+        response = await call()
+      } else {
+        throw err
+      }
+    }
     const result = JSON.parse(response.text)
     return res.status(200).json(result)
   } catch (err) {
