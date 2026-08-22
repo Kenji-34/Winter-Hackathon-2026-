@@ -17,3 +17,6 @@ CLAUDE.md
 
 .vercel
 .env*
+
+# Old pre-rename project folder (superseded by NoteLock/)
+Note Lock/
