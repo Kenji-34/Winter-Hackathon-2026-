@@ -1,78 +1,86 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from "react";
+import { getSubjects } from "./store";
 
-const SUBJECTS = ['CAB302', 'EFB210', 'CAB201', 'AYB150'];
+const SUBJECTS = ["CAB302", "EFB210", "CAB201", "AYB150"];
 
 const s = {
   page: {
-    minHeight: '100svh',
-    display: 'flex',
-    flexDirection: 'column',
-    background: '#fff',
-    fontFamily: 'system-ui, sans-serif',
+    minHeight: "100svh",
+    display: "flex",
+    flexDirection: "column",
+    background: "#fff",
+    fontFamily: "system-ui, sans-serif",
   },
   header: {
-    padding: '16px 20px',
+    padding: "16px 20px",
   },
   dropdown: {
-    width: '100%',
-    padding: '12px 16px',
+    width: "100%",
+    padding: "12px 16px",
     borderRadius: 12,
-    border: '1px solid #111827',
+    border: "1px solid #111827",
     fontSize: 16,
     fontWeight: 700,
-    background: '#fff',
-    color: '#111827',
-    appearance: 'none',
-    cursor: 'pointer',
+    background: "#fff",
+    color: "#111827",
+    appearance: "none",
+    cursor: "pointer",
   },
   previewWrap: {
     flex: 1,
-    margin: '0 20px',
+    margin: "0 20px",
     borderRadius: 12,
-    background: '#d9d9d9',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    position: 'relative',
+    background: "#d9d9d9",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    position: "relative",
   },
   video: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
   },
   placeholder: {
-    color: '#9ca3af',
+    color: "#9ca3af",
     fontSize: 14,
   },
   footer: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '24px 20px',
+    display: "flex",
+    justifyContent: "center",
+    padding: "24px 20px",
   },
   captureBtn: {
     width: 64,
     height: 64,
     borderRadius: 16,
-    border: 'none',
-    background: '#f2c14e',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    boxShadow: '2px 2px 0 rgba(0,0,0,0.9)',
+    border: "none",
+    background: "#f2c14e",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    boxShadow: "2px 2px 0 rgba(0,0,0,0.9)",
   },
   error: {
     fontSize: 13,
-    color: '#ef4444',
-    textAlign: 'center',
-    padding: '0 20px 12px',
+    color: "#ef4444",
+    textAlign: "center",
+    padding: "0 20px 12px",
   },
 };
 
 function CameraIcon() {
   return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2">
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#111827"
+      strokeWidth="2"
+    >
       <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
       <circle cx="12" cy="13" r="4" />
     </svg>
@@ -82,28 +90,43 @@ function CameraIcon() {
 export default function CameraPage({ onCapture }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
-  const [subject, setSubject] = useState(SUBJECTS[0]);
+  const [subjects, setSubjects] = useState([]);
+  const [subjectId, setSubjectId] = useState("");
   const [isActive, setIsActive] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     startCamera();
+    loadSubjects();
     return () => stopCamera();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function loadSubjects() {
+    try {
+      const data = await getSubjects();
+      setSubjects(data);
+      if (data.length > 0) setSubjectId(data[0].id);
+    } catch (err) {
+      console.error("Failed to load subjects:", err);
+      setError("Could not load your folders.");
+    }
+  }
 
   async function startCamera() {
     setError(null);
     try {
       const s = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' },
+        video: { facingMode: "environment" },
       });
       streamRef.current = s;
       if (videoRef.current) videoRef.current.srcObject = s;
       setIsActive(true);
     } catch (err) {
-      console.error('Camera access failed:', err);
-      setError('Camera access is required. Please allow camera permission and try again.');
+      console.error("Camera access failed:", err);
+      setError(
+        "Camera access is required. Please allow camera permission and try again.",
+      );
     }
   }
 
@@ -116,17 +139,17 @@ export default function CameraPage({ onCapture }) {
   function takePhoto() {
     const video = videoRef.current;
     if (!video || !video.videoWidth) {
-      setError('Camera is still starting up — try again in a moment.');
+      setError("Camera is still starting up — try again in a moment.");
       return;
     }
 
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    const dataUrl = canvas.toDataURL('image/jpeg');
+    canvas.getContext("2d").drawImage(video, 0, 0);
+    const dataUrl = canvas.toDataURL("image/jpeg");
 
-    onCapture(dataUrl, subject);
+    onCapture(dataUrl, subjectId);
   }
 
   return (
@@ -134,12 +157,18 @@ export default function CameraPage({ onCapture }) {
       <div style={s.header}>
         <select
           style={s.dropdown}
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
+          value={subjectId}
+          onChange={(e) => setSubjectId(e.target.value)}
         >
-          {SUBJECTS.map((subj) => (
-            <option key={subj} value={subj}>{subj}</option>
-          ))}
+          {subjects.length === 0 ? (
+            <option value="">No folders yet</option>
+          ) : (
+            subjects.map((subj) => (
+              <option key={subj.id} value={subj.id}>
+                {subj.name}
+              </option>
+            ))
+          )}
         </select>
       </div>
 
@@ -154,7 +183,11 @@ export default function CameraPage({ onCapture }) {
       </div>
 
       <div style={s.footer}>
-        <button style={s.captureBtn} onClick={takePhoto} aria-label="Capture slide">
+        <button
+          style={s.captureBtn}
+          onClick={takePhoto}
+          aria-label="Capture slide"
+        >
           <CameraIcon />
         </button>
       </div>
