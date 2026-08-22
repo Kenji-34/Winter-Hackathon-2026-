@@ -1,0 +1,64 @@
+:root{
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: #aa3bff;
+  --accent-bg: rgba(170,59,255,0.1);
+  --accent-border: rgba(170,59,255,0.5);
+  --shadow: rgba(0,0,0,0.08) 0 6px 18px;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'Roboto Mono', monospace;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
+
+/* Outer container (fluid) */
+.phone-frame{
+  width:100%;
+  max-width:1126px;
+  margin:12px auto;
+  background:#fff;
+  padding:12px;
+  position:relative; /* needed so absolute icon positions are relative to the phone frame */
+}
+
+/* Main layout */
+.home-root{width:100%;padding:14px 12px 96px;display:flex;flex-direction:column}
+.home-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.home-header h1{margin:0;font-size:clamp(32px,6vw,56px);color:#000;font-weight:700}
+.add-btn{width:54px;height:54px;border-radius:12px;background:#FFD400;border:2px solid #000;font-size:30px;display:inline-grid;place-items:center;box-shadow:4px 4px 0 #000}
+
+/* responsive grid */
+.folders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:25px;align-items:start;justify-items:center}
+
+/* folder card - keeps proportions and scales */
+.folder{width:100%;max-width:155.3px;position:relative;aspect-ratio:160.3/135.85}
+.folder .folder-card{position:absolute;left:0;top:11.5%;width:100%;height:88.5%;background:#fff;border:2px solid #000;border-radius:5px;box-shadow:5px 5px 0 #000}
+.folder .folder-tab{position:absolute;top:0;left:4.4%;width:47.6%;height:18%;background:transparent;border:2px solid #000;border-radius:2px;box-shadow:2px 2px 0 #000}
+.folder .folder-swatch{position:absolute;top:20.6%;left:7%;width:25.1%;height:30.3%;border-radius:2px;border:2px solid #000}
+.folder .folder-notes{position:absolute;top:20.6%;left:36%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(9px,1.6vw,10px);color:#7F7F7F}
+.folder .folder-title{position:absolute;top:70.7%;left:7%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(16px,3.2vw,20px);color:#000}
+
+/* bottom tabbar */
+.tabbar{position:fixed;left:12px;right:12px;bottom:14px;height:64px;background:#fff;border:2px solid #000;border-radius:14px;display:flex;align-items:center;justify-content:space-between;box-shadow:6px 6px 0 #000;padding:0 28px}
+.tabbar .tab-icon{background:transparent;border:none;width:auto;height:auto;border-radius:0;display:inline-flex;align-items:center;justify-content:center;padding:14px}
+.tabbar .tab-icon svg{width:32px;height:32px;stroke:#000;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+@media(min-width:768px){
+  .tabbar .tab-icon{width:64px;height:64px}
+  .tabbar .tab-icon svg{width:38px;height:38px}
+}
+
+@media(min-width:768px){
+  .phone-frame{max-width:720px}
+  .tabbar{left:24px;right:24px}
+}
+
+@media(min-width:1024px){
+  .phone-frame{max-width:980px}
+  .folders-grid{grid-template-columns:repeat(3,1fr);gap:18px}
+}
