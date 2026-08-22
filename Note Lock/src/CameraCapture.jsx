@@ -5,9 +5,14 @@ function CameraCapture({ onCapture }) {
   const [stream, setStream] = useState(null);
 
   async function startCamera() {
-    const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    setStream(s);
-    videoRef.current.srcObject = s;
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      setStream(s);
+      videoRef.current.srcObject = s;
+    } catch (err) {
+      console.error('Camera access failed:', err);
+      alert('Camera access is required to use this app.');
+    }
   }
 
   function takePhoto() {
@@ -16,7 +21,8 @@ function CameraCapture({ onCapture }) {
     canvas.height = videoRef.current.videoHeight;
     canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
     const dataUrl = canvas.toDataURL('image/jpeg');
-    onCapture(dataUrl); // base64 image — ready to send to your backend
+    // base64 image — ready to send to backend
+    onCapture(dataUrl);
   }
 
   function stopCamera() {

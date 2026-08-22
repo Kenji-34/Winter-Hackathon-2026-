@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth, signIn, signUp, signOut } from './AuthContext'
+import CameraCapture from './CameraCapture'
 
 const s = {
   page: { minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'system-ui, sans-serif', background: '#f9fafb' },
@@ -65,6 +66,9 @@ function AuthForm() {
       <button style={s.toggle} onClick={() => { setMode(m => m === 'signin' ? 'signup' : 'signin'); setError(''); setNotice('') }}>
         {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
       </button>
+      <CameraCapture onCapture={(dataUrl) => {
+        console.log('Captured Image:', dataUrl.slice(0, 50) + '...')
+      }} />
     </div>
   )
 }
