@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import quizData from './mock.json'
 import './css/Mcq.css'
+import { setDraft } from './draftStore'
 
 const QUESTIONS_PER_QUIZ = 3
 
@@ -46,6 +47,19 @@ export default function Mcq() {
     setSelectedAnswer(null)
     setResult(null)
     setExplanationOpen(true)
+  }
+
+  function goToFormat() {
+    // TEMP: subjectId/image are unset until Capture.jsx is wired in — see draftStore.js
+    setDraft({
+      subjectId: null,
+      image: null,
+      topic: quizData.topic,
+      title: quizData.title,
+      tags: quizData.tags,
+      questions: quizData.questions,
+    })
+    window.location.hash = '/format'
   }
 
   function restartQuiz() {
@@ -125,7 +139,7 @@ export default function Mcq() {
             <div className="mcq-complete-icon" aria-hidden="true">✓</div>
             <h1 id="question-title">Quiz complete!</h1>
             <p>You answered <strong>{score}</strong> out of <strong>{totalQuestions}</strong> questions correctly.</p>
-            <button className="mcq-submit" type="button" onClick={restartQuiz}>
+            <button className="mcq-submit" type="button" onClick={score === totalQuestions ? goToFormat : restartQuiz}>
               {score === totalQuestions ? 'Make note' : 'Try again'}
             </button>
             <button className="mcq-home-link" type="button" onClick={() => { window.location.hash = '/' }}>Back to home</button>
