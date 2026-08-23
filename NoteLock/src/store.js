@@ -68,6 +68,17 @@ export async function addNote({ subjectId, title, topic, tags, content, question
   return data
 }
 
+export async function updateNote(id, { title, topic, tags, content }) {
+  const { data, error } = await supabase
+    .from('notes')
+    .update({ title, topic, tags, content })
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
 export async function unlockNote(id) {
   const { data, error } = await supabase
     .from('notes')
