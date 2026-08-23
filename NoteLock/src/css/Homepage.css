@@ -8,8 +8,8 @@
   --accent-bg: rgba(170,59,255,0.1);
   --accent-border: rgba(170,59,255,0.5);
   --shadow: rgba(0,0,0,0.08) 0 6px 18px;
-  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --heading: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, SFMono-Regular, 'Roboto Mono', monospace;
 }
 
@@ -47,8 +47,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 .folder .folder-card{position:absolute;left:0;top:11.5%;width:100%;height:88.5%;background:#fff;border:2px solid #000;border-radius:5px;box-shadow:5px 5px 0 #000}
 .folder .folder-tab{position:absolute;top:0;left:4.4%;width:47.6%;height:18%;background:transparent;border:2px solid #000;border-radius:2px;box-shadow:2px 2px 0 #000}
 .folder .folder-swatch{position:absolute;top:20.6%;left:7%;width:25.1%;height:30.3%;border-radius:2px;border:2px solid #000}
-.folder .folder-notes{position:absolute;top:20.6%;left:36%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(9px,1.6vw,10px);color:#7F7F7F}
-.folder .folder-title{position:absolute;top:70.7%;left:7%;right:7%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(16px,3.2vw,20px);color:#000;white-space:nowrap; overflow:hidden;text-overflow:ellipsis}
+.folder .folder-notes{position:absolute;top:20.6%;left:36%;font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;font-size:clamp(9px,1.6vw,10px);color:#7F7F7F}
+.folder .folder-title{position:absolute;top:70.7%;left:7%;right:7%;font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;font-size:clamp(16px,3.2vw,20px);color:#000;white-space:nowrap; overflow:hidden;text-overflow:ellipsis}
 
 /* delete button — top-right corner of the card, above the other layers */
 .folder .folder-delete-btn{

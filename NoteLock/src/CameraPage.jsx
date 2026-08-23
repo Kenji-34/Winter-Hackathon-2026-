@@ -15,7 +15,7 @@ const s = {
     display: "flex",
     flexDirection: "column",
     background: "#fff",
-    fontFamily: "system-ui, sans-serif",
+    fontFamily: "'Space Grotesk', system-ui, sans-serif",
   },
   header: {
     padding: "16px 20px",
