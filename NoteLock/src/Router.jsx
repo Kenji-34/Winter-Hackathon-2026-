@@ -15,7 +15,8 @@ export default function Router() {
     return () => window.removeEventListener('hashchange', handleRouteChange)
   }, [])
 
-  if (route === '#/capture') return <Capture />
+  if (route === '#/capture/audio') return <Capture mode="audio" />
+  if (route === '#/capture') return <Capture mode="photo" />
   if (route === '#/mcq') return <Mcq />
   if (route === '#/result') return <Mcq showCompletedResult />
   if (route === '#/format') return <Format />

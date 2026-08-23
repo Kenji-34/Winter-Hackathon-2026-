@@ -3,6 +3,14 @@ import { createClient } from '@supabase/supabase-js'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
+// Splits a `data:<mimeType>[;params...];base64,<data>` URL into its base
+// mimeType (params like `;codecs=opus` stripped) and raw base64 payload.
+function parseDataUrl(dataUrl, fallbackMime) {
+  const match = dataUrl.match(/^data:([^;,]+)(?:;[^,]*)*;base64,([\s\S]*)$/)
+  if (!match) return { mimeType: fallbackMime, data: dataUrl }
+  return { mimeType: match[1], data: match[2] }
+}
+
 const NOTE_SCHEMA = {
   type: 'object',
   properties: {
@@ -28,10 +36,12 @@ const NOTE_SCHEMA = {
   required: ['topic', 'title', 'tags', 'questions'],
 }
 
-const SYSTEM_PROMPT = `You are a study assistant that turns lecture slides into a topic, title, tags, and retrieval-practice questions.
+const SYSTEM_PROMPT = `You are a study assistant that turns lecture material into a topic, title, tags, and retrieval-practice questions.
+
+The source material is either a photographed slide, an audio recording of someone explaining a concept, or both — use whichever is present. If only audio is given, there is no slide to reference; base everything on what was said.
 
 QUESTIONS — this is the most critical part of the output.
-Context: after the student photographs the slide, the slide is HIDDEN. They answer from memory alone. Questions must force recall and application, not reading.
+Context: after the student captures the source, it is HIDDEN — they answer from memory alone. Questions must force recall and application, not reading or re-listening.
 
 Rules:
 1. Write EXACTLY 3 questions (or 2 if the slide is very simple).
@@ -67,22 +77,29 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Invalid or expired session' })
   }
 
-  const { image, subject } = req.body
-  if (!image) return res.status(400).json({ error: 'image is required' })
+  const { image, audio, subject } = req.body
+  if (!image && !audio) return res.status(400).json({ error: 'image or audio is required' })
 
-  // Strip the data URL prefix to get raw base64
-  const mimeType = image.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg'
-  const base64Data = image.replace(/^data:image\/\w+;base64,/, '')
+  const parts = [
+    { text: `Subject: ${subject || 'General'}. Generate a topic, title, tags, and questions for this ${image ? 'lecture slide' : 'recorded explanation'}.` },
+  ]
+
+  if (image) {
+    const { mimeType, data } = parseDataUrl(image, 'image/jpeg')
+    parts.push({ inlineData: { mimeType, data } })
+  }
+
+  if (audio) {
+    const { mimeType, data } = parseDataUrl(audio, 'audio/webm')
+    parts.push({ inlineData: { mimeType, data } })
+  }
 
   const call = () => ai.models.generateContent({
     model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
     contents: [
       {
         role: 'user',
-        parts: [
-          { text: `Subject: ${subject || 'General'}. Generate a topic, title, tags, and questions for this lecture slide.` },
-          { inlineData: { mimeType, data: base64Data } },
-        ],
+        parts,
       },
     ],
     config: {

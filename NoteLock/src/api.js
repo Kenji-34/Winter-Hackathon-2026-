@@ -15,11 +15,11 @@ function resizeImage(dataUrl, maxPx = 1024, quality = 0.8) {
   })
 }
 
-export async function callGenerate(imageDataUrl, subject) {
+export async function callGenerate({ imageDataUrl, audioDataUrl, subject }) {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) throw new Error('Not authenticated')
 
-  const resized = await resizeImage(imageDataUrl)
+  const resizedImage = imageDataUrl ? await resizeImage(imageDataUrl) : null
 
   const res = await fetch('/api/generate', {
     method: 'POST',
@@ -27,7 +27,7 @@ export async function callGenerate(imageDataUrl, subject) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${session.access_token}`,
     },
-    body: JSON.stringify({ image: resized, subject }),
+    body: JSON.stringify({ image: resizedImage, audio: audioDataUrl ?? null, subject }),
   })
 
   if (!res.ok) {
@@ -38,11 +38,11 @@ export async function callGenerate(imageDataUrl, subject) {
   return res.json()
 }
 
-export async function callGenerateNote(imageDataUrl, formatId) {
+export async function callGenerateNote({ imageDataUrl, audioDataUrl, formatId }) {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) throw new Error('Not authenticated')
 
-  const resized = await resizeImage(imageDataUrl)
+  const resizedImage = imageDataUrl ? await resizeImage(imageDataUrl) : null
 
   const res = await fetch('/api/generate-note', {
     method: 'POST',
@@ -50,7 +50,7 @@ export async function callGenerateNote(imageDataUrl, formatId) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${session.access_token}`,
     },
-    body: JSON.stringify({ image: resized, formatId }),
+    body: JSON.stringify({ image: resizedImage, audio: audioDataUrl ?? null, formatId }),
   })
 
   if (!res.ok) {

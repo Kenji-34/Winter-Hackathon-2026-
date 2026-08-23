@@ -1,6 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import { getSubjects } from "./store";
 
+const MAX_RECORDING_SECONDS = 30;
+const AUDIO_MIME_CANDIDATES = [
+  "audio/webm;codecs=opus",
+  "audio/webm",
+  "audio/mp4",
+  "audio/ogg",
+];
+
 const s = {
   page: {
     minHeight: "100svh",
@@ -60,6 +68,34 @@ const s = {
     color: "#9ca3af",
     fontSize: 14,
   },
+  audioIdle: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 12,
+    color: "#6b7280",
+  },
+  audioHint: {
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  timerText: {
+    fontSize: 32,
+    fontWeight: 800,
+    color: "#111",
+    fontVariantNumeric: "tabular-nums",
+  },
+  recordDot: {
+    width: 14,
+    height: 14,
+    borderRadius: "50%",
+    background: "#ef4444",
+  },
+  recordingRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+  },
   footer: {
     display: "flex",
     justifyContent: "center",
@@ -76,6 +112,22 @@ const s = {
     justifyContent: "center",
     cursor: "pointer",
     boxShadow: "2px 2px 0 rgba(0,0,0,0.9)",
+  },
+  recordBtn: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    border: "2px solid #111",
+    background: "#ffd21a",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    boxShadow: "2px 2px 0 #111",
+  },
+  recordBtnActive: {
+    background: "#ef4444",
+    borderColor: "#111",
   },
   error: {
     fontSize: 13,
@@ -109,7 +161,42 @@ function BackIcon() {
   );
 }
 
-export default function CameraPage({ onCapture, onBack, externalError }) {
+function MicIcon({ color = "#111827" }) {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="9" y="2" width="6" height="12" rx="3" />
+      <path d="M5 11a7 7 0 0 0 14 0" />
+      <path d="M12 18v3" />
+      <path d="M8 21h8" />
+    </svg>
+  );
+}
+
+function formatTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const sec = totalSeconds % 60;
+  return `${m}:${String(sec).padStart(2, "0")}`;
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+export default function CameraPage({ mode = "photo", onCapture, onBack, externalError }) {
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const [subjects, setSubjects] = useState([]);
@@ -117,12 +204,21 @@ export default function CameraPage({ onCapture, onBack, externalError }) {
   const [isActive, setIsActive] = useState(false);
   const [error, setError] = useState(null);
 
+  const mediaRecorderRef = useRef(null);
+  const audioStreamRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const timerRef = useRef(null);
+  const [recording, setRecording] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+
   useEffect(() => {
-    startCamera();
     loadSubjects();
-    return () => stopCamera();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (mode === "photo") {
+      startCamera();
+      return () => stopCamera();
+    }
+    return () => stopRecording({ discard: true });
+  }, [mode]);
 
   async function loadSubjects() {
     try {
@@ -172,7 +268,90 @@ export default function CameraPage({ onCapture, onBack, externalError }) {
     const dataUrl = canvas.toDataURL("image/jpeg");
     const subjectName = subjects.find((subj) => subj.id === subjectId)?.name;
 
-    onCapture(dataUrl, subjectId, subjectName);
+    onCapture({ mode: "photo", dataUrl }, subjectId, subjectName);
+  }
+
+  async function startRecording() {
+    if (typeof MediaRecorder === "undefined") {
+      setError("Audio recording isn't supported in this browser.");
+      return;
+    }
+
+    setError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioStreamRef.current = stream;
+
+      const mimeType = AUDIO_MIME_CANDIDATES.find((type) => MediaRecorder.isTypeSupported(type));
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      recorder.onstop = async () => {
+        const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        audioStreamRef.current?.getTracks().forEach((track) => track.stop());
+        audioStreamRef.current = null;
+
+        if (blob.size === 0) {
+          setError("No audio captured — try recording again.");
+          return;
+        }
+
+        try {
+          const dataUrl = await blobToDataUrl(blob);
+          const subjectName = subjects.find((subj) => subj.id === subjectId)?.name;
+          onCapture({ mode: "audio", dataUrl }, subjectId, subjectName);
+        } catch (err) {
+          console.error("Failed to read recording:", err);
+          setError("Could not process the recording — try again.");
+        }
+      };
+
+      recorder.start();
+      setRecording(true);
+      setElapsed(0);
+      timerRef.current = setInterval(() => {
+        setElapsed((prev) => {
+          const next = prev + 1;
+          if (next >= MAX_RECORDING_SECONDS) {
+            stopRecording();
+          }
+          return next;
+        });
+      }, 1000);
+    } catch (err) {
+      console.error("Microphone access failed:", err);
+      setError("Microphone access is required. Please allow microphone permission and try again.");
+    }
+  }
+
+  function stopRecording({ discard = false } = {}) {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    const recorder = mediaRecorderRef.current;
+    if (discard && recorder) {
+      recorder.onstop = null;
+      audioStreamRef.current?.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+    }
+    if (recorder && recorder.state !== "inactive") {
+      recorder.stop();
+    }
+    mediaRecorderRef.current = null;
+    setRecording(false);
+  }
+
+  function toggleRecording() {
+    if (recording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
   }
 
   return (
@@ -202,26 +381,56 @@ export default function CameraPage({ onCapture, onBack, externalError }) {
 
       {(error || externalError) && <p style={s.error}>{error || externalError}</p>}
 
-      <div style={s.previewWrap}>
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          style={{ ...s.video, display: isActive ? "block" : "none" }}
-        />
-        {!isActive && <span style={s.placeholder}>Starting camera…</span>}
-      </div>
+      {mode === "photo" ? (
+        <>
+          <div style={s.previewWrap}>
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              style={{ ...s.video, display: isActive ? "block" : "none" }}
+            />
+            {!isActive && <span style={s.placeholder}>Starting camera…</span>}
+          </div>
 
-      <div style={s.footer}>
-        <button
-          style={s.captureBtn}
-          onClick={takePhoto}
-          aria-label="Capture slide"
-        >
-          <CameraIcon />
-        </button>
-      </div>
+          <div style={s.footer}>
+            <button
+              style={s.captureBtn}
+              onClick={takePhoto}
+              aria-label="Capture slide"
+            >
+              <CameraIcon />
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <div style={s.previewWrap}>
+            {recording ? (
+              <div style={s.recordingRow}>
+                <span style={s.recordDot} />
+                <span style={s.timerText}>{formatTime(elapsed)} / 0:{MAX_RECORDING_SECONDS}</span>
+              </div>
+            ) : (
+              <div style={s.audioIdle}>
+                <MicIcon color="#9ca3af" />
+                <span style={s.audioHint}>Tap to record (30s max)</span>
+              </div>
+            )}
+          </div>
+
+          <div style={s.footer}>
+            <button
+              style={{ ...s.recordBtn, ...(recording ? s.recordBtnActive : {}) }}
+              onClick={toggleRecording}
+              aria-label={recording ? "Stop recording" : "Start recording"}
+            >
+              <MicIcon color={recording ? "#fff" : "#111827"} />
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
