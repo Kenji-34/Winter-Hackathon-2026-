@@ -141,30 +141,17 @@ export default function Homepage() {
                   {noteCounts[subject.id] ?? 0} notes
                 </div>
                 <div className="folder-title">{subject.name}</div>
+                <button
+                  className="folder-delete-btn"
+                  aria-label={`Delete ${subject.name}`}
+                  onClick={(e) => handleDeleteFolder(subject.id, e)}
+                >
+                  🗑️
+                </button>
               </button>
             ))
           )}
         </main>
-
-        <div className="folder" key={subject.id}>
-          <div className="folder-tab" style={{ background: subject.color }} />
-          <div className="folder-card" />
-          <div
-            className="folder-swatch"
-            style={{ background: subject.color }}
-          />
-          <div className="folder-notes">
-            {noteCounts[subject.id] ?? 0} notes
-          </div>
-          <div className="folder-title">{subject.name}</div>
-          <button
-            className="folder-delete-btn"
-            aria-label={`Delete ${subject.name}`}
-            onClick={(e) => handleDeleteFolder(subject.id, e)}
-          >
-            🗑️
-          </button>
-        </div>
 
         <nav
           className="tabbar"
