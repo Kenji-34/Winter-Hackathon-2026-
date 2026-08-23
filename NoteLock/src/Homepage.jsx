@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./css/Homepage.css";
 import { getSubjects, addSubject, deleteSubject, getNotes } from "./store";
-import { signOut } from "./AuthContext";
+import { signOut, useAuth } from "./AuthContext";
 
 const FOLDER_COLORS = [
   "#909090",
@@ -13,6 +13,7 @@ const FOLDER_COLORS = [
 ];
 
 export default function Homepage() {
+  const { user } = useAuth();
   const [subjects, setSubjects] = useState([]);
   const [noteCounts, setNoteCounts] = useState({});
   const [loading, setLoading] = useState(true);
@@ -71,20 +72,29 @@ export default function Homepage() {
     <div className="phone-frame">
       <div className="home-root">
         <header className="home-header">
+          <div className="profile-block">
+            <div className="profile-icon" aria-hidden="true">
+              {user?.email?.[0]?.toUpperCase() ?? "?"}
+            </div>
+            <div className="profile-text">
+              {/* <h1>Home</h1> */}
+              {user?.email && <p className="profile-email">{user.email}</p>}
+            </div>
+          </div>
           <div className="home-brand">
             <img src="/logo.png" alt="NoteLock logo" className="home-logo" />
             <h1>Home</h1>
           </div>
           <div className="header-actions">
-            <button className="signout-btn" onClick={signOut}>
-              Sign out
-            </button>
             <button
               className="add-btn"
               aria-label="Add folder"
               onClick={handleAddFolder}
             >
               +
+            </button>
+            <button className="signout-btn" onClick={signOut}>
+              Sign out
             </button>
           </div>
         </header>
@@ -154,14 +164,6 @@ export default function Homepage() {
               <rect x="3" y="7" width="18" height="12" rx="1" ry="1" />
               <path d="M8 7l1.2-2h5.6L16 7" />
               <circle cx="12" cy="13" r="3" />
-            </svg>
-          </button>
-
-          <button className="tab-icon" aria-label="Menu">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M4 7h16" />
-              <path d="M4 12h16" />
-              <path d="M4 17h16" />
             </svg>
           </button>
         </nav>
