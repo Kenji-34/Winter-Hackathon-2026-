@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./css/Homepage.css";
 import { getSubjects, addSubject, deleteSubject, getNotes } from "./store";
 import { signOut } from "./AuthContext";
-// import { seedDemoData } from "./seed";
+import { seedDemoData } from "./seed";
 
 const FOLDER_COLORS = [
   "#909090",
