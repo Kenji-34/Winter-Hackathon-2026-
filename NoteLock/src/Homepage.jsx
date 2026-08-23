@@ -81,6 +81,10 @@ export default function Homepage() {
               {user?.email && <p className="profile-email">{user.email}</p>}
             </div>
           </div>
+          <div className="home-brand">
+            <img src="/logo.png" alt="NoteLock logo" className="home-logo" />
+            <h1>Home</h1>
+          </div>
           <div className="header-actions">
             <button
               className="add-btn"
