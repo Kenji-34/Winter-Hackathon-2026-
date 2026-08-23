@@ -46,7 +46,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 .folder .folder-tab{position:absolute;top:0;left:4.4%;width:47.6%;height:18%;background:transparent;border:2px solid #000;border-radius:2px;box-shadow:2px 2px 0 #000}
 .folder .folder-swatch{position:absolute;top:20.6%;left:7%;width:25.1%;height:30.3%;border-radius:2px;border:2px solid #000}
 .folder .folder-notes{position:absolute;top:20.6%;left:36%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(9px,1.6vw,10px);color:#7F7F7F}
-.folder .folder-title{position:absolute;top:70.7%;left:7%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(16px,3.2vw,20px);color:#000}
+.folder .folder-title{position:absolute;top:70.7%;left:7%;right:7%;font-family:Inter,system-ui,sans-serif;font-weight:600;font-size:clamp(16px,3.2vw,20px);color:#000;white-space:nowrap; overflow:hidden;text-overflow:ellipsis}
 
 /* delete button — top-right corner of the card, above the other layers */
 .folder .folder-delete-btn{

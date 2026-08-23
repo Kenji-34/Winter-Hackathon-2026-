@@ -146,7 +146,7 @@ export default function Homepage() {
                   aria-label={`Delete ${subject.name}`}
                   onClick={(e) => handleDeleteFolder(subject.id, e)}
                 >
-                  🗑️
+                  ❌
                 </button>
               </button>
             ))
