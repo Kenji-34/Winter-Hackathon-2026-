@@ -32,6 +32,7 @@ function AuthForm() {
 
   return (
     <div className="auth-card">
+      <img src="/logo.png" alt="NoteLock logo" className="auth-logo" />
       <h1 className="auth-title"><span>Note</span> Lock</h1>
       <p className="auth-tagline">Retrieve before you receive.</p>
       <form className="auth-form" onSubmit={handleSubmit}>

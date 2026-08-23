@@ -28,6 +28,14 @@
   box-shadow: 8px 8px 0 #111;
 }
 
+.auth-logo {
+  width: clamp(56px, 20vw, 84px);
+  height: clamp(56px, 20vw, 84px);
+  margin: 0 auto -6px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
 .auth-title {
   margin: 0;
   text-align: center;
