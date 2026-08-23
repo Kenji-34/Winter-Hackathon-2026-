@@ -89,6 +89,9 @@ export default function Homepage() {
             >
               +
             </button>
+            <button className="signout-btn" onClick={signOut}>
+              Sign out
+            </button>
           </div>
         </header>
 
@@ -158,10 +161,6 @@ export default function Homepage() {
               <path d="M8 7l1.2-2h5.6L16 7" />
               <circle cx="12" cy="13" r="3" />
             </svg>
-          </button>
-
-          <button className="signout-btn" onClick={signOut}>
-            Sign out
           </button>
         </nav>
       </div>
