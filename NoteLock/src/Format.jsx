@@ -16,9 +16,10 @@ export default function Format() {
   const [error, setError] = useState('')
 
   const image = draft?.image
+  const audio = draft?.audio
 
   async function handleConfirm() {
-    if (!selectedFormat || !image) return
+    if (!selectedFormat || (!image && !audio)) return
     setLoading(true)
     setError('')
     try {
@@ -32,9 +33,13 @@ export default function Format() {
         subjectId = subjects[0].id
       }
 
-      const content = await callGenerateNote(image, selectedFormat)
-      const blob = await dataUrlToBlob(image)
-      const imageUrl = await uploadSlide(blob)
+      const content = await callGenerateNote({ imageDataUrl: image, audioDataUrl: audio, formatId: selectedFormat })
+
+      let imageUrl = null
+      if (image) {
+        const blob = await dataUrlToBlob(image)
+        imageUrl = await uploadSlide(blob)
+      }
 
       const note = await addNote({
         subjectId,
@@ -136,7 +141,7 @@ export default function Format() {
         <button
           className="format-generate"
           type="button"
-          disabled={!selectedFormat || !image || loading}
+          disabled={!selectedFormat || (!image && !audio) || loading}
           onClick={handleConfirm}
         >
           {loading ? 'Generating your note…' : 'Generate'}

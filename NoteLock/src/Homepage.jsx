@@ -166,6 +166,21 @@ export default function Homepage() {
               <circle cx="12" cy="13" r="3" />
             </svg>
           </button>
+
+          <button
+            className="tab-icon record"
+            aria-label="Record audio"
+            onClick={() => {
+              window.location.hash = "/capture/audio";
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="9" y="2" width="6" height="12" rx="3" />
+              <path d="M5 11a7 7 0 0 0 14 0" />
+              <path d="M12 18v3" />
+              <path d="M8 21h8" />
+            </svg>
+          </button>
         </nav>
       </div>
     </div>

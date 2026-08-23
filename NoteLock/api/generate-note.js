@@ -4,6 +4,14 @@ import { getFormat } from '../src/formats/index.js'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
+// Splits a `data:<mimeType>[;params...];base64,<data>` URL into its base
+// mimeType (params like `;codecs=opus` stripped) and raw base64 payload.
+function parseDataUrl(dataUrl, fallbackMime) {
+  const match = dataUrl.match(/^data:([^;,]+)(?:;[^,]*)*;base64,([\s\S]*)$/)
+  if (!match) return { mimeType: fallbackMime, data: dataUrl }
+  return { mimeType: match[1], data: match[2] }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
@@ -25,27 +33,34 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Invalid or expired session' })
   }
 
-  const { image, formatId } = req.body
-  if (!image) return res.status(400).json({ error: 'image is required' })
+  const { image, audio, formatId } = req.body
+  if (!image && !audio) return res.status(400).json({ error: 'image or audio is required' })
 
   const format = getFormat(formatId)
   if (!format) {
     return res.status(400).json({ error: `Unknown formatId: ${formatId}` })
   }
 
-  // Strip the data URL prefix to get raw base64
-  const mimeType = image.match(/^data:(image\/\w+);base64,/)?.[1] || 'image/jpeg'
-  const base64Data = image.replace(/^data:image\/\w+;base64,/, '')
+  const parts = [
+    { text: `${format.promptHint} Generate the note content for this ${image ? 'lecture slide' : 'recorded explanation'}.` },
+  ]
+
+  if (image) {
+    const { mimeType, data } = parseDataUrl(image, 'image/jpeg')
+    parts.push({ inlineData: { mimeType, data } })
+  }
+
+  if (audio) {
+    const { mimeType, data } = parseDataUrl(audio, 'audio/webm')
+    parts.push({ inlineData: { mimeType, data } })
+  }
 
   const call = () => ai.models.generateContent({
     model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
     contents: [
       {
         role: 'user',
-        parts: [
-          { text: `${format.promptHint} Generate the note content for this lecture slide.` },
-          { inlineData: { mimeType, data: base64Data } },
-        ],
+        parts,
       },
     ],
     config: {
