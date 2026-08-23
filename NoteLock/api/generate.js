@@ -9,39 +9,6 @@ const NOTE_SCHEMA = {
     topic: { type: 'string' },
     title: { type: 'string' },
     tags:  { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 5 },
-    content: {
-      type: 'object',
-      properties: {
-        summary:  { type: 'string' },
-        sections: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              heading: { type: 'string' },
-              points:  { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 5 },
-            },
-            required: ['heading', 'points'],
-          },
-          minItems: 1,
-          maxItems: 5,
-        },
-        keyTerms: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              term:       { type: 'string' },
-              definition: { type: 'string' },
-            },
-            required: ['term', 'definition'],
-          },
-          maxItems: 6,
-        },
-        formulas: { type: 'array', items: { type: 'string' } },
-      },
-      required: ['summary', 'sections', 'keyTerms', 'formulas'],
-    },
     questions: {
       type: 'array',
       items: {
@@ -58,16 +25,10 @@ const NOTE_SCHEMA = {
       maxItems: 3,
     },
   },
-  required: ['topic', 'title', 'tags', 'content', 'questions'],
+  required: ['topic', 'title', 'tags', 'questions'],
 }
 
-const SYSTEM_PROMPT = `You are a study assistant that turns lecture slides into structured notes and retrieval-practice questions.
-
-NOTES
-- summary: 2–4 concise sentences covering the core idea of the slide.
-- sections: extract the main concepts as headings with bullet points. Do not invent content not on the slide.
-- keyTerms: only include terms explicitly introduced or defined on the slide.
-- formulas: include only if the slide contains equations or formulas; otherwise return an empty array.
+const SYSTEM_PROMPT = `You are a study assistant that turns lecture slides into a topic, title, tags, and retrieval-practice questions.
 
 QUESTIONS — this is the most critical part of the output.
 Context: after the student photographs the slide, the slide is HIDDEN. They answer from memory alone. Questions must force recall and application, not reading.
@@ -119,7 +80,7 @@ export default async function handler(req, res) {
       {
         role: 'user',
         parts: [
-          { text: `Subject: ${subject || 'General'}. Generate notes and questions for this lecture slide.` },
+          { text: `Subject: ${subject || 'General'}. Generate a topic, title, tags, and questions for this lecture slide.` },
           { inlineData: { mimeType, data: base64Data } },
         ],
       },
