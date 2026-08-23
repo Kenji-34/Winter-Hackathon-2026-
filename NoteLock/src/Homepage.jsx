@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./css/Homepage.css";
 import { getSubjects, addSubject, deleteSubject, getNotes } from "./store";
-import { signOut } from "./AuthContext";
+import { signOut, useAuth } from "./AuthContext";
 
 const FOLDER_COLORS = [
   "#909090",
@@ -13,6 +13,7 @@ const FOLDER_COLORS = [
 ];
 
 export default function Homepage() {
+  const { user } = useAuth();
   const [subjects, setSubjects] = useState([]);
   const [noteCounts, setNoteCounts] = useState({});
   const [loading, setLoading] = useState(true);
@@ -71,7 +72,15 @@ export default function Homepage() {
     <div className="phone-frame">
       <div className="home-root">
         <header className="home-header">
-          <h1>Home</h1>
+          <div className="profile-block">
+            <div className="profile-icon" aria-hidden="true">
+              {user?.email?.[0]?.toUpperCase() ?? "?"}
+            </div>
+            <div className="profile-text">
+              <h1>Home</h1>
+              {user?.email && <p className="profile-email">{user.email}</p>}
+            </div>
+          </div>
           <div className="header-actions">
             <button
               className="add-btn"
