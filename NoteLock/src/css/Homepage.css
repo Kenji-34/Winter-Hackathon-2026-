@@ -28,17 +28,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 
 /* Main layout */
 .home-root{width:100%;padding:14px 12px 96px;display:flex;flex-direction:column}
-.home-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.home-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .profile-block{display:flex;align-items:center;gap:12px}
 .profile-icon{width:44px;height:44px;flex-shrink:0;border-radius:50%;background:#FFD400;border:2px solid #000;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#000;box-shadow:2px 2px 0 #000}
 .profile-text{display:flex;flex-direction:column}
-.home-header h1{margin:0;font-size:clamp(24px,4.5vw,40px);color:#000;font-weight:700;line-height:1.1}
 .profile-email{margin:2px 0 0;font-size:13px;color:var(--text);font-weight:500}
-.home-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.home-header h1{margin:0;font-size:clamp(32px,6vw,56px);color:#000;font-weight:700}
-.home-brand{display:flex;align-items:center;gap:12px}
-.home-logo{width:clamp(32px,6vw,48px);height:clamp(32px,6vw,48px);object-fit:contain;border-radius:8px}
-.header-actions{display:flex;align-items:center;gap:12px}
 .signout-btn{height:40px;padding:0 16px;border-radius:10px;background:#fff;border:2px solid #000;font-size:13px;font-weight:600;color:#000;cursor:pointer;box-shadow:3px 3px 0 #000}
 .add-btn{width:54px;height:54px;border-radius:12px;background:#FFD400;border:2px solid #000;font-size:30px;display:inline-grid;place-items:center;box-shadow:4px 4px 0 #000}
 

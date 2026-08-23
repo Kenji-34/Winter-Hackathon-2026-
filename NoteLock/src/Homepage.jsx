@@ -77,26 +77,19 @@ export default function Homepage() {
               {user?.email?.[0]?.toUpperCase() ?? "?"}
             </div>
             <div className="profile-text">
-              {/* <h1>Home</h1> */}
               {user?.email && <p className="profile-email">{user.email}</p>}
             </div>
           </div>
-          <div className="home-brand">
-            <img src="/logo.png" alt="NoteLock logo" className="home-logo" />
-            <h1>Home</h1>
-          </div>
-          <div className="header-actions">
-            <button
-              className="add-btn"
-              aria-label="Add folder"
-              onClick={handleAddFolder}
-            >
-              +
-            </button>
-            <button className="signout-btn" onClick={signOut}>
-              Sign out
-            </button>
-          </div>
+          <button
+            className="add-btn"
+            aria-label="Add folder"
+            onClick={handleAddFolder}
+          >
+            +
+          </button>
+          <button className="signout-btn" onClick={signOut}>
+            Sign out
+          </button>
         </header>
 
         {error && <p className="home-status home-error">{error}</p>}
