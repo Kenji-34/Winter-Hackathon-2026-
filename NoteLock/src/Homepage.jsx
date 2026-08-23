@@ -77,7 +77,7 @@ export default function Homepage() {
               {user?.email?.[0]?.toUpperCase() ?? "?"}
             </div>
             <div className="profile-text">
-              <h1>Home</h1>
+              {/* <h1>Home</h1> */}
               {user?.email && <p className="profile-email">{user.email}</p>}
             </div>
           </div>
