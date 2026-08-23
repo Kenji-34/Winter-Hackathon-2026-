@@ -71,7 +71,10 @@ export default function Homepage() {
     <div className="phone-frame">
       <div className="home-root">
         <header className="home-header">
-          <h1>Home</h1>
+          <div className="home-brand">
+            <img src="/logo.png" alt="NoteLock logo" className="home-logo" />
+            <h1>Home</h1>
+          </div>
           <div className="header-actions">
             <button className="signout-btn" onClick={signOut}>
               Sign out
