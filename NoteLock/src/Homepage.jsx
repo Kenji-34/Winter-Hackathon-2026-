@@ -88,9 +88,6 @@ export default function Homepage() {
         <header className="home-header">
           <h1>Home</h1>
           <div className="header-actions">
-            <button className="signout-btn" onClick={signOut}>
-              Sign out
-            </button>
             <button
               className="add-btn"
               aria-label="Add folder"
@@ -179,12 +176,8 @@ export default function Homepage() {
             </svg>
           </button>
 
-          <button className="tab-icon" aria-label="Menu">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M4 7h16" />
-              <path d="M4 12h16" />
-              <path d="M4 17h16" />
-            </svg>
+          <button className="signout-btn" onClick={signOut}>
+            Sign out
           </button>
         </nav>
       </div>
