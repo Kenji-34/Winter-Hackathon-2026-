@@ -28,8 +28,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 
 /* Main layout */
 .home-root{width:100%;padding:14px 12px 96px;display:flex;flex-direction:column}
-.home-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.profile-block{display:flex;align-items:center;gap:12px}
+.home-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.profile-block{display:flex;flex-direction:column;align-items:center;gap:4px}
 .profile-icon{width:44px;height:44px;flex-shrink:0;border-radius:50%;background:#FFD400;border:2px solid #000;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#000;box-shadow:2px 2px 0 #000}
 .profile-text{display:flex;flex-direction:column}
 .profile-email{margin:2px 0 0;font-size:13px;color:var(--text);font-weight:500}
