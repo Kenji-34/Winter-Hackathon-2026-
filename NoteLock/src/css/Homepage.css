@@ -34,9 +34,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans)}
 .signout-btn{height:40px;padding:0 16px;border-radius:10px;background:#fff;border:2px solid #000;font-size:13px;font-weight:600;color:#000;cursor:pointer;box-shadow:3px 3px 0 #000}
 .add-btn{width:54px;height:54px;border-radius:12px;background:#FFD400;border:2px solid #000;font-size:30px;display:inline-grid;place-items:center;box-shadow:4px 4px 0 #000}
 
-.seed-btn{margin:0 0 16px;padding:8px 14px;background:#f4f3ec;border:1.5px dashed #999;border-radius:8px;font-size:12px;font-weight:600;color:#666;cursor:pointer}
-.seed-btn:disabled{opacity:.6;cursor:not-allowed}
-
 .home-status{grid-column:1/-1;color:var(--text);font-size:15px;margin:24px 0}
 .home-status.home-error{color:#e0245e}
 

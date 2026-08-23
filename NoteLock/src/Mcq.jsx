@@ -11,7 +11,7 @@ function getRandomQuestions(sourceQuestions) {
     .slice(0, QUESTIONS_PER_QUIZ)
 }
 
-export default function Mcq() {
+export default function Mcq({ showCompletedResult = false }) {
   // Real captures (via Capture.jsx) populate the draft before navigating
   // here; falls back to mock.json for standalone/dev testing.
   const draft = getDraft()
@@ -22,8 +22,8 @@ export default function Mcq() {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [result, setResult] = useState(null)
   const [explanationOpen, setExplanationOpen] = useState(true)
-  const [score, setScore] = useState(0)
-  const [complete, setComplete] = useState(false)
+  const [score, setScore] = useState(showCompletedResult ? QUESTIONS_PER_QUIZ : 0)
+  const [complete, setComplete] = useState(showCompletedResult)
 
   const question = questions[questionIndex]
   const questionNumber = questionIndex + 1

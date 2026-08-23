@@ -17,6 +17,7 @@ export default function Router() {
 
   if (route === '#/capture') return <Capture />
   if (route === '#/mcq') return <Mcq />
+  if (route === '#/result') return <Mcq showCompletedResult />
   if (route === '#/format') return <Format />
   if (route.startsWith('#/note/')) {
     const id = route.slice('#/note/'.length)
